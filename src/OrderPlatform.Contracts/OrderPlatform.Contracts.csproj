@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <!-- Tek .NET sürümü standardı: C# raporundaki net6/net7/net8 karışıklığı
+         (risk #2) burada baştan önleniyor; tüm projeler net9.0 kullanır. -->
+  </PropertyGroup>
+
+</Project>

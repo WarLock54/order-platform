@@ -1,0 +1,11 @@
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\bin\Debug\net9.0\OrderPlatform.Contracts.deps.json
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\bin\Debug\net9.0\OrderPlatform.Contracts.dll
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\bin\Debug\net9.0\OrderPlatform.Contracts.pdb
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\obj\Debug\net9.0\OrderPlatform.Contracts.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\obj\Debug\net9.0\OrderPlatform.Contracts.AssemblyInfoInputs.cache
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\obj\Debug\net9.0\OrderPlatform.Contracts.AssemblyInfo.cs
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\obj\Debug\net9.0\OrderPlatform.Contracts.csproj.CoreCompileInputs.cache
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\obj\Debug\net9.0\OrderPlatform.Contracts.dll
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\obj\Debug\net9.0\refint\OrderPlatform.Contracts.dll
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\obj\Debug\net9.0\OrderPlatform.Contracts.pdb
+C:\Users\onur\source\repos\order-platform\src\OrderPlatform.Contracts\obj\Debug\net9.0\ref\OrderPlatform.Contracts.dll

@@ -1,0 +1,137 @@
+networks:
+  order-net:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  rabbitmq-data:
+
+services:
+  # ---------------------------------------------------------------------
+  # Altyapı (Infrastructure)
+  # ---------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: order_platform
+      POSTGRES_PASSWORD: order_platform
+      POSTGRES_DB: order_platform
+      # Database-per-Service: her mikroservis kendi izole veritabanına sahip.
+      POSTGRES_MULTIPLE_DATABASES: "orders,inventory,payments"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./deploy/postgres-init/init-multiple-dbs.sh:/docker-entrypoint-initdb.d/init-multiple-dbs.sh
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U order_platform"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [order-net]
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # Management UI (guest/guest)
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    networks: [order-net]
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [order-net]
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.53
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686" # Jaeger UI
+      - "4317:4317"   # OTLP gRPC receiver
+    networks: [order-net]
+
+  # ---------------------------------------------------------------------
+  # Uygulama servisleri (Application services)
+  # ---------------------------------------------------------------------
+  order-service:
+    build:
+      context: .
+      dockerfile: src/OrderPlatform.OrderService/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      inventory-service:
+        condition: service_healthy
+      payment-service:
+        condition: service_healthy
+    ports:
+      - "8081:8080"
+    environment:
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=orders;Username=order_platform;Password=order_platform"
+      ConnectionStrings__Redis: "redis:6379"
+      RabbitMq__Host: "rabbitmq"
+      Otlp__Endpoint: "http://jaeger:4317"
+    networks: [order-net]
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: src/OrderPlatform.InventoryService/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8082:8080"
+    environment:
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=inventory;Username=order_platform;Password=order_platform"
+      RabbitMq__Host: "rabbitmq"
+      Otlp__Endpoint: "http://jaeger:4317"
+    networks: [order-net]
+
+  payment-service:
+    build:
+      context: .
+      dockerfile: src/OrderPlatform.PaymentService/Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    ports:
+      - "8084:8080"
+    environment:
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=payments;Username=order_platform;Password=order_platform"
+      RabbitMq__Host: "rabbitmq"
+      Otlp__Endpoint: "http://jaeger:4317"
+    networks: [order-net]
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: src/OrderPlatform.NotificationService/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      RabbitMq__Host: "rabbitmq"
+    networks: [order-net]
