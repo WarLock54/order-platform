@@ -1,4 +1,4 @@
-# Order Platform — Event-Driven E-Commerce/Logistics Platform (Project 2)
+# Order Platform — Event-Driven E-Commerce/Logistics Platform
 
 A microservices architecture written in .NET 9 + MassTransit + PostgreSQL +
 Redis, using **the framework's own Transactional Outbox and Saga State
