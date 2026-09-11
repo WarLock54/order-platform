@@ -2,7 +2,7 @@
 
 A microservices architecture written in .NET 9 + MassTransit + PostgreSQL +
 Redis, using **the framework's own Transactional Outbox and Saga State
-Machine support**. A direct continuation of Project 1 (Go + Kafka + gRPC):
+Machine support**. A direct continuation of order project (Go + Kafka + gRPC):
 same domain (orders/inventory/payments), same guarantees, but this time
 solved with the .NET ecosystem's mature tooling instead of hand-rolling
 everything.
